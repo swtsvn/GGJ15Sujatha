@@ -1,24 +1,20 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/player1Controller.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Default" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/player2Controller.cs">
     <Files>
-      <File FileName="Assets/player1Controller.cs" Line="14" Column="2" />
-      <File FileName="Assets/player2Controller.cs" Line="13" Column="35" />
+      <File FileName="Assets/player1Controller.cs" Line="91" Column="27" />
+      <File FileName="Assets/player2Controller.cs" Line="92" Column="27" />
+      <File FileName="Assets/MazeController.cs" Line="596" Column="24" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore>
-      <Breakpoint file="/Users/sujathanagarajan/Documents/GGJ15/Assets/playerController.cs" line="18" />
-      <Breakpoint file="/Users/sujathanagarajan/Documents/GGJ15/Assets/playerController.cs" line="13" />
-      <Breakpoint file="/Users/sujathanagarajan/Documents/GGJ15/Assets/MazeController.cs" line="17" />
-      <Breakpoint file="/Users/sujathanagarajan/Documents/GGJ15/Assets/MazeController.cs" line="27" />
-      <Breakpoint file="/Users/sujathanagarajan/Documents/GGJ15/Assets/MazeController.cs" line="172" />
-      <Breakpoint file="/Users/sujathanagarajan/Documents/GGJ15/Assets/MazeController.cs" line="87" />
-      <Breakpoint file="/Users/sujathanagarajan/Documents/GGJ15/Assets/MazeController.cs" line="98" />
-      <Breakpoint file="/Users/sujathanagarajan/Documents/GGJ15/Assets/MazeController.cs" line="82" />
-      <Breakpoint file="/Users/sujathanagarajan/Documents/GGJ15/Assets/MazeController.cs" line="100" />
-      <Breakpoint file="/Users/sujathanagarajan/Documents/GGJ15/Assets/MazeController.cs" line="99" />
+      <Breakpoint file="/Users/sujathanagarajan/GitHub/GGJ15Sujatha/GGJ15/Assets/player1Controller.cs" line="87" />
+      <Breakpoint file="/Users/sujathanagarajan/GitHub/GGJ15Sujatha/GGJ15/Assets/MazeController.cs" line="308" />
     </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
-  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches>
+    <Watch file="Assets/MazeController.cs" line="327" offsetX="359" offsetY="3912" expression="MazeExits" liveUpdate="False" />
+    <Watch file="Assets/MazeController.cs" line="327" offsetX="359" offsetY="3912" expression="MazeExits" liveUpdate="False" />
+  </MonoDevelop.Ide.DebuggingService.PinnedWatches>
 </Properties>

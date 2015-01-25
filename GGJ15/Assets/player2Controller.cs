@@ -4,21 +4,35 @@ using System.Collections;
 
 public class player2Controller : MonoBehaviour {
 
-	public static bool Won = false;
+	public bool Won = false;
+
+	private GameObject maze;
+	private MazeController mazeScript;
+
+	private GameObject otherPlayer;
+	private player2Controller otherPlayerScript;
 
 	// Use this for initialization
 	void Start () {
-		int x = Random.Range (1, MazeController.TOTAL_WIDTH - 2);
-		int z = Random.Range (1, MazeController.TOTAL_HEIGHT - 2);
-		int index = z * MazeController.TOTAL_WIDTH + x;
-		while( MazeController.IsWall(index)){
-			x = Random.Range (1, MazeController.TOTAL_WIDTH - 2);
-			z = Random.Range (1, MazeController.TOTAL_HEIGHT - 2);
-			index = z * MazeController.TOTAL_WIDTH + x;
-		}
-		
-		transform.position = new Vector3 (x, 0, z);
+
 		PlayerCommon.Start ();
+
+		maze = GameObject.Find ("Maze");
+		mazeScript = maze.GetComponent<MazeController> ();
+
+		otherPlayer = GameObject.Find ("player2");
+		otherPlayerScript = otherPlayer.GetComponent<player2Controller> ();
+		
+
+		int x = Random.Range (20, MazeController.TOTAL_WIDTH - 20);
+		int z = Random.Range (20, MazeController.TOTAL_HEIGHT - 20);
+		//int index = z * MazeController.TOTAL_WIDTH + x;
+		while( mazeScript.BitMapHasEntry(x,z)){
+			x = Random.Range (20, MazeController.TOTAL_WIDTH - 20);
+			z = Random.Range (20, MazeController.TOTAL_HEIGHT - 20);
+			//index = z * MazeController.TOTAL_WIDTH + x;
+		}
+		transform.position = new Vector3 (x, 0, z);
 	}
 	
 	// Update is called once per frame
@@ -58,15 +72,25 @@ public class player2Controller : MonoBehaviour {
 		//	float z = Input.GetAxis ("Vertical");
 		//float speed = 3.0f;
 		Vector3 NewPos = transform.position + new Vector3 (xDir, 0, yDir);
-		int BitMapIndex = (int)NewPos.z * MazeController.TOTAL_WIDTH + (int)NewPos.x;
-		if(MazeController.IsWall(BitMapIndex)){
-			//play sound . cannot move.
+	//	int BitMapIndex = (int)NewPos.z * MazeController.TOTAL_WIDTH + (int)NewPos.x;
+		if(mazeScript.BitMapHasEntry(NewPos.x, NewPos.z)){
+			if(mazeScript.HandleSwitch(NewPos, EPlayer.PLAYER_1)){
+				//play switch sound
+			}
+			else{
+				//play block sound
+			}
 		}
 		else{
 			transform.position = NewPos;
-			if(MazeController.HasExited(NewPos)){
+			if(mazeScript.HasExited(NewPos)){
 				Won = true;
 				renderer.material.color = Color.cyan;
+
+				if(otherPlayerScript.Won){
+					//game won
+					mazeScript.Playerswon();
+				}
 				//play sound 
 			}
 			//play sound 

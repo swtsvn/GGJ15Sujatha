@@ -49,24 +49,33 @@ public enum EPlayer{
 }
 
 public struct Exit{
-	public Vector2 Position;
+	public Vector3 Position;
 	public EPlayer PlayerIndex;
+	public bool HasDoor;
 }
+
 
 public class MazeController : MonoBehaviour {
 
 	public static int TOTAL_WIDTH = 50;
 	public static int TOTAL_HEIGHT = 50;
 	public static Exit[] MazeExits;
-	//public static Vector2 Player1Exit = 0 ;
-	//public static int Player2Exit = 0 ;
 	public static int MAX_EXITS = 5;
 
 	public GameObject wall;
 	public GameObject camera;
 	public GameObject CountdownTimerText;
+	public GameObject WinLoseText;
 	public GameObject testCube;
 	public static int IntSizeBits = 0 ;
+	public ArrayList WallArray;
+	private ArrayList SwitchArray;
+    public static int TotalExits = 0 ;
+
+	public Color Player1DoorColor = Color.cyan, Player2DoorColor = Color.red;
+	public Color InsideWallColor = Color.white;
+	public Color Player1Color = Color.blue;
+	public Color Player2Color = Color.red;
 
 	private int MAX_ITERATIONS = 200;
 	TimeController Timer;
@@ -94,28 +103,40 @@ public class MazeController : MonoBehaviour {
 
 				if(i == TOTAL_WIDTH - 1 || k == TOTAL_HEIGHT - 1 || i == 0 || k == 0){
 					newWall = (GameObject)Instantiate(wall, new Vector3(i, 0, k), Quaternion.identity);
-
-					newWall.renderer.material.color = Color.cyan;
+					WallArray.Add(newWall);
+					newWall.renderer.material.color = Color.gray;
 
 					bool Corner = (i == 0 && k == 0 ) || ( i == 0 && k == TOTAL_HEIGHT - 1) || (i == TOTAL_WIDTH - 1 && k == 0 ) || ( i == TOTAL_WIDTH - 1 && k == TOTAL_HEIGHT - 1 );
-					if(Random.Range(0,45) == 0 && ExitIndex < MAX_EXITS && !Corner)
+					bool bExitAllowed =  false;
+					if(i == 0  || i == TOTAL_WIDTH - 1){
+						bExitAllowed = (k > 4 && k < TOTAL_HEIGHT - 4) ? true : false;
+					}
+					else if(k == 0 || k == TOTAL_HEIGHT - 1){
+						bExitAllowed = (i > 4 && i < TOTAL_HEIGHT)? true : false;
+					}
+
+					//create exit
+					if(Random.Range(0,45) == 0 && ExitIndex < MAX_EXITS && !Corner && bExitAllowed)
 					{
 						//exit
 						if(ExitIndex % 2 == 0){
 							//player 1
 							newWall.renderer.material.color = Color.blue;
-							MazeExits[ExitIndex].Position = new Vector3(i, 0, k);
 							MazeExits[ExitIndex].PlayerIndex = EPlayer.PLAYER_0;						
 						}
 						else{
 							newWall.renderer.material.color = Color.red;
-							MazeExits[ExitIndex].Position = new Vector3(i, 0, k);
+						
 							MazeExits[ExitIndex].PlayerIndex = EPlayer.PLAYER_1;
 						}
-						ExitIndex++;
+						MazeExits[ExitIndex].Position.x = i;
+						MazeExits[ExitIndex].Position.z = k;
+						MazeExits[ExitIndex].HasDoor = false;
+
+						ExitIndex = ExitIndex + 1;
 					}
 					else{
-						MazeBitMap[BitMapCellCount / IntSizeBits] |= (0x1 << (BitMapCellCount % IntSizeBits));
+						SetBitMap(BitMapCellCount);
 					}
 					newWall.renderer.enabled = true;
 
@@ -133,46 +154,67 @@ public class MazeController : MonoBehaviour {
 		}
 		if (!P1) {
 						//hack : pick a left border wall instead of random location. 
-						int z = TOTAL_HEIGHT / 2;
-						newWall = (GameObject)Instantiate (wall, new Vector3 (0, 0, z), Quaternion.identity); //Warning memory leak. todo : find the existing wall in that location. 
-			
+			int z = TOTAL_HEIGHT / 2;
+			int x = 0 ;
+			newWall = (GameObject)Instantiate (wall, new Vector3 (x, 0, z), Quaternion.identity); //Warning memory leak. todo : find the existing wall in that location. 
+			newWall.renderer.enabled = true;
+			WallArray.Add (newWall);
 
 						//looks like there was only one exit and it belongs to p2. because the p1 and p2 exits alternate.
 						newWall.renderer.material.color = Color.blue;
 						MazeExits [ExitIndex].Position = new Vector3 (0, 0, z);
-						MazeExits [ExitIndex].PlayerIndex = EPlayer.PLAYER_0;		
-				} else if (!P2) {
-						//hack : pick a left border wall instead of random location. 
-						int z = TOTAL_HEIGHT / 2;
-						newWall = (GameObject)Instantiate (wall, new Vector3 (0, 0, z), Quaternion.identity); //Warning memory leak. todo : find the existing wall in that location. 
-			
-			
-						//looks like there was only one exit and it belongs to p1. because the p1 and p2 exits alternate during generation
-						newWall.renderer.material.color = Color.red;
-						MazeExits [ExitIndex].Position = new Vector3 (0, 0, z);
-						MazeExits [ExitIndex].PlayerIndex = EPlayer.PLAYER_1;		
-				}
-				
+						MazeExits [ExitIndex].PlayerIndex = EPlayer.PLAYER_0;	
+			MazeExits[ExitIndex].HasDoor = false;
 
+			//add to bit mask
+
+			SetBitMap(x, z);
+			ExitIndex++;
+
+			} 
+		   else if (!P2) {
+			//hack : pick a left border wall instead of random location. 
+			int z = TOTAL_HEIGHT / 2;
+			int x = 0 ;
+			newWall = (GameObject)Instantiate (wall, new Vector3 (x, 0, z), Quaternion.identity); //Warning memory leak. todo : find the existing wall in that location. 
+			WallArray.Add (newWall);
+			newWall.renderer.enabled = true;
+
+			
+			//looks like there was only one exit and it belongs to p1. because the p1 and p2 exits alternate during generation
+			newWall.renderer.material.color = Color.red;
+			MazeExits [ExitIndex].Position = new Vector3 (0, 0, z);
+			MazeExits [ExitIndex].PlayerIndex = EPlayer.PLAYER_1;	
+			MazeExits[ExitIndex].HasDoor = false;
+
+			//add to bit mask
+			SetBitMap(x, z);
+			ExitIndex++;
+			}
+				
+		TotalExits = ExitIndex;
 	}//func
 
 	
 	// Use this for initialization
 	void Awake() {
-		IntSizeBits = sizeof(int) * sizeof(byte);
+		IntSizeBits = sizeof(int) * 8;
 		MazeBitMap = new int[( TOTAL_WIDTH * TOTAL_HEIGHT / IntSizeBits ) + 1 ];
 		MazeExits = new Exit[MAX_EXITS];
+		WallArray = new ArrayList();
+		SwitchArray = new ArrayList ();
 
 		SetBorder ();	
 		Timer = new TimeController ();
 		Timer.Start ();
-		Timer.countDownSeconds = 15;
+		Timer.countDownSeconds = 240;
 
 		RecursiveDivideAlgorithm (0, 0, TOTAL_WIDTH, TOTAL_HEIGHT, Direction.HORIZONTAL, 0);
 		camera.transform.position = new Vector3 (TOTAL_WIDTH / 2, 50, TOTAL_HEIGHT / 2);
 
 		//Create Door
 		CreateDoor ();
+		CreateSwitch ();
 
 	}
 	
@@ -193,7 +235,7 @@ public class MazeController : MonoBehaviour {
 		for(int k = 0; k < TOTAL_HEIGHT; k++){
 			for (int i = 0; i < TOTAL_WIDTH; i++) {
 				
-				if((MazeBitMap[index / IntSizeBits] & ( 1 << (index % IntSizeBits))) != 0 ){
+				if(BitMapHasEntry(i,k)){
 					GameObject testcb = (GameObject)Instantiate(testCube, new Vector3(i, 5, k), Quaternion.identity);
 					testcb.renderer.material.color = Color.blue;
 				}
@@ -229,11 +271,12 @@ public class MazeController : MonoBehaviour {
 		GameObject newWall;
 
 		for (int xStep = x+1; xStep < (x+w-1) && xStep != Hole && xStep != Hole2; xStep++) {
-			//newWall = (GameObject)Instantiate(wall, new Vector3(y1, 0, xStep), Quaternion.identity);
+			if(WallExistsInArray(xStep, y1)){continue;}
 			newWall = (GameObject)Instantiate(wall, new Vector3(xStep, 0, y1), Quaternion.identity);
-			int index = y1 * TOTAL_WIDTH + xStep;
-			MazeBitMap[index / IntSizeBits] |= (1 << (index % IntSizeBits));
+			WallArray.Add (newWall);
+			SetBitMap(xStep, y1);
 			newWall.renderer.enabled = true;
+			newWall.renderer.material.color = InsideWallColor;
 		}
 		
 		RecursiveDivideAlgorithm (x, y, w, y1 - y, d, IterationCount);
@@ -248,23 +291,20 @@ public class MazeController : MonoBehaviour {
 		GameObject newWall;
 		for (int yStep = y+1; yStep < (y+h-1) && yStep != Hole && yStep != Hole2; yStep++) {
 			//newWall = (GameObject)Instantiate(wall, new Vector3(yStep, 0, x1), Quaternion.identity);
+			if(WallExistsInArray(x1, yStep)){continue;}
 			newWall = (GameObject)Instantiate(wall, new Vector3(x1, 0, yStep), Quaternion.identity);
-			int index = yStep * TOTAL_WIDTH + x1;
-			MazeBitMap[index / IntSizeBits] |= (1 << (index % IntSizeBits));
+			WallArray.Add (newWall);
+			SetBitMap(x1, yStep);
 			newWall.renderer.enabled = true;
+			newWall.renderer.material.color = InsideWallColor;
 		}
 		RecursiveDivideAlgorithm (x, y, x1 - x, h, d, IterationCount);
 		RecursiveDivideAlgorithm (x1, y, x + w - x1, h, d, IterationCount);
 	}
-
-	public static bool IsWall(int index)
-	{
-		return ((MazeBitMap [index / IntSizeBits] & (1 << (index % IntSizeBits))) != 0);
-	}
-
-	public static bool HasExited(Vector3 InPos){
+	
+	public bool HasExited(Vector3 InPos){
 		for(int i = 0 ; i < MAX_EXITS ; i++){
-			if(InPos.x == MazeExits[i].Position.x && InPos.y == MazeExits[i].Position.y){
+			if(InPos.x == MazeExits[i].Position.x && InPos.z == MazeExits[i].Position.z){
 				return true;
 			}
 		}
@@ -276,7 +316,7 @@ public class MazeController : MonoBehaviour {
 		//Alternate between each player's exit and create doors. Make sure there are no other exits nearby.
 
 		bool P1Door = false, P2Door = false;
-		for(int i = 0 ; i < MAX_EXITS; i++){
+		for(int i = 0 ; i < TotalExits; i++){
 			if(MazeExits[i].PlayerIndex == EPlayer.PLAYER_0 ){
 				if(!P1Door){
 
@@ -304,69 +344,256 @@ public class MazeController : MonoBehaviour {
 	}//function
 
 	private void CreateDoorInternal(int MazeExitIndex){
-		ClearSorroundingWalls(MazeExitIndex);
-	}//func
-
-	private void ClearSorroundingWalls(int MazeExitIndex){
-		Vector2 pos = MazeExits[MazeExitIndex].Position;
+		Vector3 pos = MazeExits[MazeExitIndex].Position;
 		EPlayer PlayerIndex = MazeExits [MazeExitIndex].PlayerIndex;
+
+		Color c = (PlayerIndex == EPlayer.PLAYER_0) ? Player1DoorColor : Player2DoorColor;
 
 		if (pos.x == 0) {
 			//left border, somewhere. 
 			for(float x1 = pos.x + 1 ; x1 <= pos.x + 2; x1++){
-				//clear the sorrounding blocks to allow door creation . 
-				//ClearWall(x1, pos.y-1);
-				//ClearWall(x1, pos.y+1);
 
-				CreateNewWall(x1, pos.y - 1);
-				CreateNewWall(x1, pos.y);
-				CreateNewWall(x1, pos.y + 1);
+				CreateNewWall(x1, pos.z - 1, c);
+				CreateNewWall(x1, pos.z, c);
+				CreateNewWall(x1, pos.z + 1, c);
 
 				if(x1 == pos.x + 1){
-					ClearWall(x1, pos.y);
+					ClearWall(x1, pos.z);
 				}//if
+
+
 			}//for
+			MazeExits[MazeExitIndex].HasDoor = true;
 		}// if
 		else if(pos.x == TOTAL_WIDTH -1){
 			//right border. 
-			for(float x1 = pos.x - 1; x1 <= pos.x - 2; x1++){
-				CreateNewWall(x1, pos.y - 1);
-				CreateNewWall(x1, pos.y);
-				CreateNewWall(x1, pos.y + 1);
+			for(float x1 = pos.x - 1; x1 >= pos.x - 2; x1--){
+
+				CreateNewWall(x1, pos.z - 1, c);
+				CreateNewWall(x1, pos.z, c);
+				CreateNewWall(x1, pos.z + 1,c);
 				
 				if(x1 == pos.x - 1){
-					ClearWall(x1, pos.y);
+					ClearWall(x1, pos.z);
 				}//if
 			}//for
+			MazeExits[MazeExitIndex].HasDoor = true;
 		}//ELSE
-		else if(pos.y == 0){
+		else if(pos.z == 0){
 			//bottom border
-			for(float y1 = pos.y + 1 ; y1 <= pos.y + 2 ;y1++){
-				CreateNewWall(pos.x - 1 , y1);
-				CreateNewWall(pos.x, y1);
-				CreateNewWall(pos.x + 1, y1);
+			for(float y1 = pos.z + 1 ; y1 <= pos.z + 2 ;y1++){
 
-				if(y1 == pos.y + 1){
+				CreateNewWall(pos.x - 1 , y1,c);
+				CreateNewWall(pos.x, y1, c);
+				CreateNewWall(pos.x + 1, y1, c);
+
+				if(y1 == pos.z + 1){
 					ClearWall(pos.x, y1);
 				}
 			}//for
+			MazeExits[MazeExitIndex].HasDoor = true;
 		}//bottom border
-		else if(pos.y == TOTAL_HEIGHT - 1){
-			for(float y1 = pos.y - 1 ; y1 <= pos.y - 2 ;y1++){
-				CreateNewWall(pos.x - 1 , y1);
-				CreateNewWall(pos.x, y1);
-				CreateNewWall(pos.x + 1, y1);
+		else if(pos.z == TOTAL_HEIGHT - 1){
+			for(float y1 = pos.z - 1 ; y1 >= pos.z - 2 ;y1--){
+
+				CreateNewWall(pos.x - 1 , y1, c);
+				CreateNewWall(pos.x, y1, c );
+				CreateNewWall(pos.x + 1, y1, c);
 				
-				if(y1 == pos.y - 1){
+				if(y1 == pos.z - 1){
 					ClearWall(pos.x, y1);
 				}
 			}
+			MazeExits[MazeExitIndex].HasDoor = true;
 		}
 
 	}//func
 
-	private void CreateNewWall(float x, float y){
+	private GameObject CreateNewWall(float x, float z, Color c){
+		ClearWall (x, z);
+		GameObject newWall = (GameObject)Instantiate (wall, new Vector3 (x, 0, z), Quaternion.identity); 
+		newWall.renderer.enabled = true;
+		WallArray.Add (newWall);
+		newWall.renderer.material.color = c;
+
+		//add to bit mask
+		SetBitMap (x, z);
+		return newWall;
 	}//func
-	private void ClearWall(float x, float y){
+
+	private void ClearWall(float x, float z){
+
+		//get the wall at location, and hide. 
+		foreach( GameObject wall in WallArray){
+			if((int)wall.transform.position.x == (int)x && (int)wall.transform.position.z == (int)z){
+				wall.renderer.enabled = false;	
+				ClearBitMap(x, z);
+			}
+		}
 	}//func
+
+	private bool WallExistsInArray(float x, float z){
+		foreach( GameObject wall in WallArray){
+			if((int)wall.transform.position.x == (int)x && (int)wall.transform.position.z == (int)z){
+				return true;
+			}
+		}
+		return false;
+	}//function
+
+	private void SetBitMap(int index){
+		MazeBitMap[index / IntSizeBits] |= (0x1 << (index % IntSizeBits));
+	}
+
+	private void SetBitMap(float x, float z){
+		int index = (int)(z * TOTAL_WIDTH + x);
+		SetBitMap (index);
+	}
+
+	public bool BitMapHasEntry(float x, float z){
+		int index = (int)(z * TOTAL_WIDTH + x);
+		return ((MazeBitMap[index / IntSizeBits] & ( 1 << (index % IntSizeBits))) != 0 );
+	}
+
+	private void ClearBitMap(float x, float z){
+		int index = (int)(z * TOTAL_WIDTH + x);
+		MazeBitMap[index / IntSizeBits] &= ~(1 << (index % IntSizeBits));
+	}
+	private void CreateSwitch()
+	{
+		int x = Random.Range (20, TOTAL_WIDTH -20);
+		int y = Random.Range (20, TOTAL_HEIGHT - 20);
+
+		ClearWall (x - 1, y - 1);
+		ClearWall (x - 1, y);
+		ClearWall (x - 1, y + 1);
+		ClearWall (x, y - 1);
+		ClearWall (x, y);
+		ClearWall (x, y + 1);
+		ClearWall (x + 1, y - 1);
+		ClearWall (x, y);
+		ClearWall (x, y + 1);
+
+		GameObject w = CreateNewWall (x, y, Color.blue); //p1
+
+		SwitchArray.Add (w);
+
+		int x1 = x;
+		int y1 = y;
+		do {
+		 x1 = Random.Range (15, TOTAL_WIDTH - 15);
+		 y1 = Random.Range (15, TOTAL_HEIGHT - 15);
+				} while(x1 == x && y1 ==y);
+		x = x1;
+		y = y1;
+
+		ClearWall (x - 1, y - 1);
+		ClearWall (x - 1, y);
+		ClearWall (x - 1, y + 1);
+		ClearWall (x, y - 1);
+		ClearWall (x, y);
+		ClearWall (x, y + 1);
+		ClearWall (x + 1, y - 1);
+		ClearWall (x, y);
+		ClearWall (x, y + 1);
+		
+		GameObject w1 = CreateNewWall (x, y, Color.red); //p1
+		SwitchArray.Add (w1);
+
+	}
+
+	public bool HandleSwitch(Vector3 Inpos, EPlayer p){
+
+		foreach( GameObject wall in SwitchArray){
+			if((int)wall.transform.position.x == (int)Inpos.x && (int)wall.transform.position.z == (int)Inpos.z){
+			
+				//clear door. 
+				if(wall.renderer.material.color == Player1Color && p == EPlayer.PLAYER_1){
+					//player 1 switch. 
+					for(int i = 0 ; i < TotalExits ;i++){
+						Exit e = MazeExits[i];
+						if(e.PlayerIndex == EPlayer.PLAYER_0 && e.HasDoor){
+							ClearDoor(e);
+						}// player 1
+
+					}// for
+
+					ClearWall(Inpos.x, Inpos.z);
+					CreateNewWall(Inpos.x, Inpos.z, InsideWallColor);
+
+				}
+
+				else if(wall.renderer.material.color == Player2Color && p == EPlayer.PLAYER_0){
+					//player 1 switch. 
+					for(int i = 0 ; i < TotalExits ;i++){
+						Exit e = MazeExits[i];
+						if(e.PlayerIndex == EPlayer.PLAYER_1 && e.HasDoor){
+							ClearDoor(e);
+						}// player 1
+					}// for
+
+					ClearWall(Inpos.x, Inpos.z);
+					CreateNewWall(Inpos.x, Inpos.z, InsideWallColor);
+					
+				}
+
+
+				return true;
+			}
+		}
+		return false;
+	}
+
+private void ClearDoor(Exit e){
+	//clear all doors of player 0
+	Vector3 pos = e.Position;
+
+	if (pos.x == 0) {
+		//left border, somewhere. 
+		for(float x1 = pos.x + 1 ; x1 <= pos.x + 2; x1++){
+			
+			ClearWall(x1, pos.z - 1);
+			ClearWall(x1, pos.z);
+			ClearWall(x1, pos.z + 1);
+			
+		}//for
+		e.HasDoor = false;
+	}// if
+	else if(pos.x == TOTAL_WIDTH -1){
+		//right border. 
+		for(float x1 = pos.x - 1; x1 >= pos.x - 2; x1--){
+			
+			ClearWall(x1, pos.z - 1);
+			ClearWall(x1, pos.z);
+			ClearWall(x1, pos.z + 1);
+			
+		}//for
+		e.HasDoor = false;
+	}//ELSE
+	else if(pos.z == 0){
+		//bottom border
+		for(float y1 = pos.z + 1 ; y1 <= pos.z + 2 ;y1++){
+			
+			ClearWall(pos.x - 1 , y1);
+			ClearWall(pos.x, y1);
+			ClearWall(pos.x + 1, y1);
+			
+		}//for
+		e.HasDoor = false;
+	}//bottom border
+	else if(pos.z == TOTAL_HEIGHT - 1){
+		for(float y1 = pos.z - 1 ; y1 >= pos.z - 2 ;y1--){
+			
+			ClearWall(pos.x - 1 , y1);
+			ClearWall(pos.x, y1);
+			ClearWall(pos.x + 1, y1);
+			
+		}
+		e.HasDoor = false;
+	}
+
+}//func
+	public void Playerswon(){
+		//Timer.remainingSeconds = 0;
+	}
 }
