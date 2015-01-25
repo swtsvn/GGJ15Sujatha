@@ -1,10 +1,10 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Standard Assets/Scripts/player1Controller.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Standard Assets/Scripts/MazeController.cs">
     <Files>
-      <File FileName="Assets/Standard Assets/Scripts/MazeController.cs" Line="219" Column="6" />
-      <File FileName="Assets/Standard Assets/Scripts/player1Controller.cs" Line="82" Column="1" />
-      <File FileName="Assets/Standard Assets/Scripts/player2Controller.cs" Line="44" Column="1" />
+      <File FileName="Assets/Standard Assets/Scripts/MazeController.cs" Line="230" Column="29" />
+      <File FileName="Assets/Standard Assets/Scripts/player1Controller.cs" Line="74" Column="27" />
+      <File FileName="Assets/Standard Assets/Scripts/player2Controller.cs" Line="106" Column="37" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
@@ -14,7 +14,7 @@
       <Breakpoint enabled="false" file="/Users/sujathanagarajan/GitHub/GGJ15Sujatha/GGJ15/Assets/MazeController.cs" line="523" />
       <Breakpoint enabled="false" file="/Users/sujathanagarajan/GitHub/GGJ15Sujatha/GGJ15/Assets/MazeController.cs" line="525" />
       <Breakpoint enabled="false" file="/Users/sujathanagarajan/GitHub/GGJ15Sujatha/GGJ15/Assets/player1Controller.cs" line="118" />
-      <Breakpoint enabled="false" file="/Users/sujathanagarajan/GitHub/GGJ15Sujatha/GGJ15/Assets/Standard Assets/Scripts/player1Controller.cs" line="100" />
+      <Breakpoint enabled="false" file="/Users/sujathanagarajan/GitHub/GGJ15Sujatha/GGJ15/Assets/Standard Assets/Scripts/player1Controller.cs" line="102" />
       <Breakpoint file="/Users/sujathanagarajan/GitHub/GGJ15Sujatha/GGJ15/Assets/Standard Assets/Scripts/player2Controller.cs" line="58" />
       <Breakpoint file="/Users/sujathanagarajan/GitHub/GGJ15Sujatha/GGJ15/Assets/Standard Assets/Scripts/player2Controller.cs" line="61" />
       <Breakpoint file="/Users/sujathanagarajan/GitHub/GGJ15Sujatha/GGJ15/Assets/Standard Assets/Scripts/player2Controller.cs" line="65" />

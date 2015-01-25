@@ -227,7 +227,7 @@ public class MazeController : MonoBehaviour {
 		SetBorder ();	
 		Timer = new TimeController ();
 		Timer.Start ();
-		Timer.countDownSeconds = 60;
+		Timer.countDownSeconds = 30;
 
 		RecursiveDivideAlgorithm (0, 0, TOTAL_WIDTH, TOTAL_HEIGHT, Direction.HORIZONTAL, 0);
 		camera.transform.position = new Vector3 (TOTAL_WIDTH / 2, 50, TOTAL_HEIGHT / 2);
