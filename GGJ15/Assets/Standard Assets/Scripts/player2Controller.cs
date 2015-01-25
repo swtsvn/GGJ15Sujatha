@@ -103,7 +103,7 @@ public class player2Controller : MonoBehaviour {
 				//play switch sound
 			}
 			else{
-				//play block sound
+				mazeScript.WallHit.audio.Play();
 			}
 			return true;
 		}

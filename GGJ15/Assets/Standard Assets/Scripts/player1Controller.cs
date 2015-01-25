@@ -9,6 +9,7 @@ public class player1Controller : MonoBehaviour {
 	private MazeController mazeScript;
 	private GameObject otherPlayer;
 	private player2Controller otherPlayerScript;
+
 //	public AudioSource AudioHitWall;
 //	public AudioClip AudioClipHitWall;
 
@@ -59,18 +60,19 @@ public class player1Controller : MonoBehaviour {
 
 		float xDir = 0;
 		float yDir = 0;
+		float value = 1.0f;
 		if (Input.GetKeyDown (left)) {
-			xDir = -1;
+			xDir = -value;
 		} 
 		else if (Input.GetKeyDown (right)) {
-			xDir = 1;
+			xDir = value;
 		}
 
 		if(Input.GetKeyDown(down)){
-			yDir = -1;
+			yDir = -value;
 		}
 		else if(Input.GetKeyDown(up)){
-			yDir  = 1;
+			yDir  = value;
 		}
 
 
@@ -113,13 +115,7 @@ public class player1Controller : MonoBehaviour {
 				//play switch sound
 			}
 			else{
-				//play block sound
-				//AudioHitWall = MaterialImpactManager.GetPlayerFootstepSound (physicMaterial);
-				//audio.PlayOneShot(AudioHitWall.clip, 1.0f);
-			//	audio.PlayOneShot(AudioClipHitWall, 1.0f);
-			//	audio.Play();
-				//audio.
-			//	audio.PlayOneShot((AudioClip)AudioP1HitWall, 1.0f);
+				mazeScript.WallHit.audio.Play();
 			}
 			return true;
 		}

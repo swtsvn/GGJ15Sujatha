@@ -12,6 +12,7 @@ public class TimeController{
 	private float timeLeft;
 	public string timeText;
 
+
 	public void Start(){
 		startTime = Time.time;
 	}
@@ -75,6 +76,9 @@ public class MazeController : MonoBehaviour {
 	public GameObject Door;
 	public GameObject TimeText;
 	public GameObject WinLoseText;
+	public GameObject SoundExit;
+	public GameObject WallHit;
+	public GameObject SoundSwitch;
 //	public GUIText TimeText;
 	//public GameObject camera;
 
@@ -223,7 +227,7 @@ public class MazeController : MonoBehaviour {
 		SetBorder ();	
 		Timer = new TimeController ();
 		Timer.Start ();
-		Timer.countDownSeconds = 30;
+		Timer.countDownSeconds = 60;
 
 		RecursiveDivideAlgorithm (0, 0, TOTAL_WIDTH, TOTAL_HEIGHT, Direction.HORIZONTAL, 0);
 		camera.transform.position = new Vector3 (TOTAL_WIDTH / 2, 50, TOTAL_HEIGHT / 2);
@@ -327,6 +331,7 @@ public class MazeController : MonoBehaviour {
 	public bool HasExited(Vector3 InPos, EPlayer p){
 		for(int i = 0 ; i < MAX_EXITS ; i++){
 			if(InPos.x == MazeExits[i].Position.x && InPos.z == MazeExits[i].Position.z && MazeExits[i].PlayerIndex == p){
+				SoundExit.audio.Play();
 				return true;
 			}
 		}
@@ -562,7 +567,7 @@ public class MazeController : MonoBehaviour {
 					
 				}
 
-
+				SoundSwitch.audio.Play();
 				return true;
 			}
 		}
@@ -625,6 +630,10 @@ private void ClearDoor(Exit e){
 		if(t.text == ""){
 			t.text = "Won!!";
 			Timer.RemainingSeconds = 0;
+		//	AudioSource aa = WinLoseText.GetComponent<AudioSource>();
+			//audio.PlayOneShot(aa.clip);
+			//aa.Play();
+			WinLoseText.audio.Play();
 		}
 
 	}
@@ -634,11 +643,11 @@ private void ClearDoor(Exit e){
 		if(t.text ==""){
 			t.text = "Boo!!!";
 			Timer.RemainingSeconds = 0;
-			                             
+			WinLoseText.audio.Play();         
 		}
-	
+		
 	}
-
+	
 	public bool IsGameOver(){
 				return ( Initialized && Timer.RemainingSeconds <= 0 );
 	}

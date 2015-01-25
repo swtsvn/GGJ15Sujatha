@@ -1,10 +1,10 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
   <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Standard Assets/Scripts/player1Controller.cs">
     <Files>
-      <File FileName="Assets/Standard Assets/Scripts/MazeController.cs" Line="628" Column="26" />
-      <File FileName="Assets/Standard Assets/Scripts/player1Controller.cs" Line="44" Column="1" />
-      <File FileName="Assets/Standard Assets/Scripts/player2Controller.cs" Line="89" Column="30" />
+      <File FileName="Assets/Standard Assets/Scripts/MazeController.cs" Line="219" Column="6" />
+      <File FileName="Assets/Standard Assets/Scripts/player1Controller.cs" Line="82" Column="1" />
+      <File FileName="Assets/Standard Assets/Scripts/player2Controller.cs" Line="44" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
@@ -15,7 +15,10 @@
       <Breakpoint enabled="false" file="/Users/sujathanagarajan/GitHub/GGJ15Sujatha/GGJ15/Assets/MazeController.cs" line="525" />
       <Breakpoint enabled="false" file="/Users/sujathanagarajan/GitHub/GGJ15Sujatha/GGJ15/Assets/player1Controller.cs" line="118" />
       <Breakpoint enabled="false" file="/Users/sujathanagarajan/GitHub/GGJ15Sujatha/GGJ15/Assets/Standard Assets/Scripts/player1Controller.cs" line="100" />
-      <Breakpoint file="/Users/sujathanagarajan/GitHub/GGJ15Sujatha/GGJ15/Assets/Standard Assets/Scripts/player1Controller.cs" line="82" />
+      <Breakpoint file="/Users/sujathanagarajan/GitHub/GGJ15Sujatha/GGJ15/Assets/Standard Assets/Scripts/player2Controller.cs" line="58" />
+      <Breakpoint file="/Users/sujathanagarajan/GitHub/GGJ15Sujatha/GGJ15/Assets/Standard Assets/Scripts/player2Controller.cs" line="61" />
+      <Breakpoint file="/Users/sujathanagarajan/GitHub/GGJ15Sujatha/GGJ15/Assets/Standard Assets/Scripts/player2Controller.cs" line="65" />
+      <Breakpoint file="/Users/sujathanagarajan/GitHub/GGJ15Sujatha/GGJ15/Assets/Standard Assets/Scripts/player2Controller.cs" line="68" />
     </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches>
